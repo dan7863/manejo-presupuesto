@@ -28,3 +28,4 @@
 /home/alex/Escritorio/ASP NET/proyectos/ManejoPresupuesto/obj/Debug/net8.0/ManejoPresupuesto.pdb
 /home/alex/Escritorio/ASP NET/proyectos/ManejoPresupuesto/obj/Debug/net8.0/ManejoPresupuesto.genruntimeconfig.cache
 /home/alex/Escritorio/ASP NET/proyectos/ManejoPresupuesto/obj/Debug/net8.0/ref/ManejoPresupuesto.dll
+/home/alex/Escritorio/ASP NET/proyectos/ManejoPresupuesto/obj/Debug/net8.0/ManejoPresupuesto.sourcelink.json
