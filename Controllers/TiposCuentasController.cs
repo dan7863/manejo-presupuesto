@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using ManejoPresupuesto.Models;
 using Microsoft.Data.SqlClient;
 using Dapper;
+using ManejoPresupuesto.Servicios;
 
 public class TiposCuentasController : Controller
 {
     // private readonly string connectionString;
     private readonly ILogger<HomeController> _logger;
     private readonly IRepositorioTiposCuentas repositorioTiposCuentas;
+    private readonly IServicioUsuarios servicioUsuarios;
 
     public TiposCuentasController(// IConfiguration configuration, 
     ILogger<HomeController> logger,
@@ -29,6 +31,12 @@ public class TiposCuentasController : Controller
         return View();
     }
 
+    public async Task<IActionResult> Index(){
+        var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+        var tiposCuentas = await repositorioTiposCuentas.Obtener(usuarioId);
+        return View(tiposCuentas);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Crear(TipoCuenta tipoCuenta){
 
@@ -36,7 +44,7 @@ public class TiposCuentasController : Controller
             return View(tipoCuenta);
         }
 
-        tipoCuenta.UsuarioId = 1;
+        tipoCuenta.UsuarioId = servicioUsuarios.ObtenerUsuarioId();
 
         var yaExisteTipoCuenta = await repositorioTiposCuentas.Existe(tipoCuenta.Nombre, tipoCuenta.UsuarioId);
         
@@ -49,7 +57,19 @@ public class TiposCuentasController : Controller
 
         await repositorioTiposCuentas.Crear(tipoCuenta);
 
-        return View();
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> VerificarExisteTipoCuenta(string nombre){
+        var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+        var yaExisteTipoCuenta = await repositorioTiposCuentas.Existe(nombre, usuarioId);
+        Console.WriteLine(yaExisteTipoCuenta);
+        if(yaExisteTipoCuenta){
+            return Json($"El nombre {nombre} ya existe");
+        }
+
+        return Json(true);
     }
 
 }

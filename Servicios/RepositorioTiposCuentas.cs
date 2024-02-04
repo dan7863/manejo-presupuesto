@@ -28,4 +28,12 @@ public class RepositorioTiposCuentas : IRepositorioTiposCuentas
     
         return existe == 1;
     }
+
+    public async Task<IEnumerable<TipoCuenta>> Obtener(int usuarioId){
+        using var connection = new SqlConnection(connectionString);
+        return await connection.QueryAsync<TipoCuenta>(
+            @"SELECT Id, Nombre, Orden FROM TiposCuentas 
+            WHERE UsuarioId = @UsuarioId", new {usuarioId}
+            );
+    }
 }
