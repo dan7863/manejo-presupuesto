@@ -37,12 +37,25 @@ public class RepositorioCuentas : IRepositorioCuentas
     public async Task<Cuenta> ObtenerPorId(int id, int usuarioId){
         using var connection = new SqlConnection(connectionString);
         return await connection.QueryFirstOrDefaultAsync<Cuenta>(@"
-            SELECT Cuentas.Id, Cuentas.Nombre, Balance, Descripcion, tc.TipoCuentaId AS TipoCuenta
+            SELECT Cuentas.Id, Cuentas.Nombre, Balance, Descripcion, TipoCuentaId
             FROM Cuentas 
             INNER JOIN TiposCuentas tc
             ON tc.Id = Cuentas.TipoCuentaId
             WHERE tc.UsuarioId = @UsuarioId AND Cuentas.Id = @Id",
             new {id, usuarioId}
         );
+    }
+
+    public async Task Actualizar(CuentaCreacionViewModel cuenta){
+        using var connection = new SqlConnection(connectionString);
+        await connection.ExecuteAsync(@"
+        UPDATE Cuentas SET Nombre = @Nombre, Balance = @Balance,
+        Descripcion = @Descripcion, TipoCuentaId = @TipoCuentaId
+        WHERE Id = @Id;", cuenta);
+    }
+
+    public async Task Borrar(int id){
+        using var connection = new SqlConnection(connectionString);
+        await connection.ExecuteAsync("DELETE Cuentas WHERE Id = @Id", new { id });
     }
 }
